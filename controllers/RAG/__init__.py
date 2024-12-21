@@ -5,7 +5,7 @@ from pymongo.operations import SearchIndexModel
 from constants.https_status_codes import *
 from utils.ApiResponse import ApiResponse
 from utils.ApiError import ApiError
-from gpt4all import GPT4All
+# from gpt4all import GPT4All
 import os
 
 RAG=Blueprint("RAG",__name__,url_prefix="/api/v1/RAG")
@@ -97,30 +97,30 @@ def get_query_results(query):
       array_of_results.append(doc)
    return array_of_results
 
-# local_llm_path = "path\orca-mini-3b.gguf"
-local_llm_path="./orca-mini-3b-gguf2-q4_0.gguf"
-local_llm = GPT4All(local_llm_path)
+# # local_llm_path = "path\orca-mini-3b.gguf"
+# local_llm_path="./orca-mini-3b-gguf2-q4_0.gguf"
+# local_llm = GPT4All(local_llm_path)
 
 
-@RAG.route("/ask_question",methods=['POST'])
-def ask_question():
-    print("WORKING")
-    question = "Can you recommend a few AirBnBs that are beach houses? Include a link to the listing."
-    documents = get_query_results(question)
-    print(documents)
-    if (len(documents)==0) :
-        return ApiError("COULDN't FIND DOCUMENT",HTTP_404_NOT_FOUND)
-    text_documents = ""
-    for doc in documents:
-        summary = doc.get("summary", "")
-        link = doc.get("listing_url", "")
-        string = f"Summary: {summary} Link: {link}. \n"
-        text_documents += string
-    prompt = f"""Use the following pieces of context to answer the question at the end.
-        {text_documents}
-        Question: {question}
-    """
-    response = local_llm.generate(prompt)
-    cleaned_response = response.replace('\\n', '\n')
-    print(cleaned_response)
-    return ApiResponse("Working QUEASTION",HTTP_200_OK,cleaned_response)
+# @RAG.route("/ask_question",methods=['POST'])
+# def ask_question():
+#     print("WORKING")
+#     question = "Can you recommend a few AirBnBs that are beach houses? Include a link to the listing."
+#     documents = get_query_results(question)
+#     print(documents)
+#     if (len(documents)==0) :
+#         return ApiError("COULDN't FIND DOCUMENT",HTTP_404_NOT_FOUND)
+#     text_documents = ""
+#     for doc in documents:
+#         summary = doc.get("summary", "")
+#         link = doc.get("listing_url", "")
+#         string = f"Summary: {summary} Link: {link}. \n"
+#         text_documents += string
+#     prompt = f"""Use the following pieces of context to answer the question at the end.
+#         {text_documents}
+#         Question: {question}
+#     """
+#     response = local_llm.generate(prompt)
+#     cleaned_response = response.replace('\\n', '\n')
+#     print(cleaned_response)
+#     return ApiResponse("Working QUEASTION",HTTP_200_OK,cleaned_response)

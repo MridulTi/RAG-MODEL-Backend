@@ -1,11 +1,11 @@
 from flask import Flask
 # from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from pymongo import MongoClient
 import os
 
-# load_dotenv()
+load_dotenv()
 
 external_scripts=[
     {'src': 'https://cdn.tailwindcss.com'}
@@ -14,6 +14,10 @@ server=Flask(__name__)
 CORS(server,supports_credentials=True)
 MONGODB_URI=os.getenv("MONGODB_URI")
 mongodb_client = MongoClient(MONGODB_URI)
+if not MONGODB_URI:
+    raise ValueError("MONGODB_URI is not set. Check your .env file.")
+
+print("URI:",MONGODB_URI,"CLIENT: ",mongodb_client)
 # mongodb_client.admin.command("ping")
 # os.environ["FIREWORKS_API_KEY"] = "fw_3ZezC9bSzHLDEsncGRqLn7GZ"
 
